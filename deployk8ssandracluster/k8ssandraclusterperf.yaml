@@ -1,0 +1,48 @@
+apiVersion: k8ssandra.io/v1alpha1
+kind: K8ssandraCluster
+metadata:
+  name: demo
+spec:
+  reaper:
+    heapSize: 16Gi
+    autoScheduling:
+      enabled: false
+  cassandra:
+    serverVersion: "4.0.3"
+    datacenters:
+      - metadata:
+          name: dc1
+        telemetry:
+          prometheus:
+            enabled: true
+        size: 3
+        storageConfig:
+          cassandraDataVolumeClaimSpec:
+            storageClassName: vmc-workload-storage-policy-cluster-1
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 1000Gi
+        config:
+          jvmOptions:
+            heapSize: 31G
+            g1gc:
+               enabled: true
+               setUpdatingPauseTimePercent: 5 
+               maxGcPauseMillis: 300 
+          resources:
+            requests:
+              memory: 59Gi
+              cpu: 7500m
+            limits:
+              memory: 60Gi
+        stargate:
+          size: 1
+          heapSize: 20G
+        #telemetry: 
+         # prometheus:
+          #  enabled: true
+            #mcacMetricFilters:
+             # - "deny:org.apache.cassandra.metrics.Table"
+             # - "allow:org.apache.cassandra.metrics.Table.LiveSSTableCount"

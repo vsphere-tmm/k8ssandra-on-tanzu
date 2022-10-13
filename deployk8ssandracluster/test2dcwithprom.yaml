@@ -1,0 +1,41 @@
+apiVersion: k8ssandra.io/v1alpha1
+kind: K8ssandraCluster
+metadata:
+  name: demo
+spec:
+  reaper:
+    heapSize: 512Mi
+    autoScheduling:
+      enabled: false
+  cassandra:
+    telemetry: 
+      prometheus:
+        enabled: true
+    serverVersion: "4.0.3"
+    storageConfig:
+      cassandraDataVolumeClaimSpec:
+        storageClassName: vmc-workload-storage-policy-cluster-1
+        accessModes:
+          - ReadWriteOnce
+        resources:
+          requests:
+            storage: 1024G
+    config:
+      jvmOptions:
+        heapSize: 512M
+    networking:
+      hostNetwork: false    
+    datacenters:
+      - metadata:
+          name: dc1
+        size: 3
+        stargate:
+          size: 1
+          heapSize: 256M
+      - metadata:
+          name: dc2
+        k8sContext: cassandra-2 
+        size: 3
+        stargate:
+          size: 1
+          heapSize: 256M 

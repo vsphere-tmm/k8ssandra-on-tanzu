@@ -1,0 +1,28 @@
+apiVersion: run.tanzu.vmware.com/v1alpha1
+kind: TanzuKubernetesCluster
+metadata:
+  name: cassandra-2
+  namespace: cassandra
+spec:
+  distribution:
+    version: v1.21
+  topology:
+    controlPlane:
+      count: 3
+      class: best-effort-xsmall
+      storageClass: vmc-workload-storage-policy-cluster-1
+    workers:
+      count: 4
+      class: best-effort-2xlarge
+      storageClass: vmc-workload-storage-policy-cluster-1
+  settings:
+    network:
+      cni:
+        name: antrea-nsx-routed
+      services:
+        cidrBlocks: ["198.51.100.0/12"] #Cannot overlap with Supervisor Cluster
+      pods:
+        cidrBlocks: #["192.0.2.0/16"] #Cannot overlap with Supervisor Cluster
+    storage:
+      classes: ["vmc-workload-storage-policy-cluster-1"] #Named PVC storage classes
+      defaultClass: vmc-workload-storage-policy-cluster-1 #Default PVC storage class

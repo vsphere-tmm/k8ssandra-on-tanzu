@@ -1,0 +1,47 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nosqlbenchlatency
+  namespace: k8ssandra-operator
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - java
+        - -jar
+        - nb.jar
+        - cql-tabular2
+        - username=demo-superuser
+        - password=tcvB6bsJl8ZHU2c6paRY
+        - rampup-cycles=1M
+        - main-cycles=50M
+        - write_ratio=5
+        - read_ratio=5
+        - threads=150
+        - striderate=10
+        - stride=800
+        - hosts=demo-dc1-service
+        - --progress
+        - console:1s
+        - --log-histograms
+        - /var/lib/stress/hdrlatency
+        - --report-csv-to
+        - /var/lib/stress/latency_test_io
+        - rf=3
+        - partsize=5000
+        - -v
+        image: nosqlbench/nosqlbench
+        name: nosqlbench
+        resources:
+          requests:
+            cpu: "5000m"
+            memory: "8Gi"
+        volumeMounts:
+        - name: stress-results
+          mountPath: /var/lib/stress
+      volumes:
+      - name: stress-results
+        persistentVolumeClaim:
+          claimName: testlog-pvc
+      restartPolicy: Never

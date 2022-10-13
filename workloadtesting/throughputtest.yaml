@@ -1,0 +1,45 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nosqlbench16stargateheap
+  namespace: k8ssandra-operator
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - java
+        - -jar
+        - nb.jar
+        - cql-tabular2
+        - username=demo-superuser
+        - password=tcvB6bsJl8ZHU2c6paRY
+        - rampup-cycles=1M
+        - main-cycles=100M
+        - write_ratio=5
+        - read_ratio=5
+        - async=300
+        - hosts=demo-dc1-service
+        - --progress
+        - console:1s
+        - --log-histograms
+        - /var/lib/stress/hdr
+        - --report-csv-to
+        - /var/lib/stress/throughput_test_io
+        - rf=3
+        - partsize=5000
+        - -v
+        image: nosqlbench/nosqlbench
+        name: nosqlbench
+        resources:
+          requests:
+            cpu: "5000m"
+            memory: "8Gi"
+        volumeMounts:
+        - name: stress-results
+          mountPath: /var/lib/stress
+      volumes:
+      - name: stress-results
+        persistentVolumeClaim:
+          claimName: testlog-pvc  
+      restartPolicy: Never

@@ -1,0 +1,12 @@
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: testlog12-pvc
+spec:
+  accessModes:
+    - ReadWriteOnce
+  storageClassName: vmc-workload-storage-policy-cluster-1
+  resources:
+    requests:
+        storage: 10Gi
+           
