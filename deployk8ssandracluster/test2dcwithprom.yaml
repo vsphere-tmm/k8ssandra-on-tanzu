@@ -12,6 +12,10 @@ spec:
       prometheus:
         enabled: true
     serverVersion: "4.0.3"
+    softPodAntiAffinity: false 
+#SoftPodAntiAffinity sets whether multiple Cassandra instances can be scheduled on 
+#the same node. This should normally be false to ensure cluster resilience but may be 
+#set true for test/dev scenarios to minimise the number of nodes required.
     storageConfig:
       cassandraDataVolumeClaimSpec:
         storageClassName: vmc-workload-storage-policy-cluster-1
