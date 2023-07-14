@@ -1,0 +1,43 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: nosqlbenchiot
+  namespace: k8ssandra-operator
+spec:
+  template:
+    spec:
+      containers:
+      - command:
+        - java
+        - -jar
+        - nb.jar
+        - cql-iot
+        - username=demo-superuser
+        - password=HDSrrth5XE3-iQIqQXo8
+        - rampup-cycles=1M
+        - main-cycles=100M
+        - write_ratio=9
+        - read_ratio=1
+        - async=300
+        - hosts=demo-dc1-service
+        - --progress
+        - console:1s
+        - --report-csv-to
+        - /stress/throughput_test_io_iot
+        - rf=3
+        - partsize=5000
+        - -v
+        image: nosqlbench/nosqlbench:4.15.103
+        name: nosqlbench
+        resources:
+          requests:
+            cpu: "7500m"
+            memory: "8Gi"
+        volumeMounts:
+        - name: stress-results
+          mountPath: /stress
+      volumes:
+      - name: stress-results
+        persistentVolumeClaim:
+          claimName: testlog-pvc  
+      restartPolicy: Never
