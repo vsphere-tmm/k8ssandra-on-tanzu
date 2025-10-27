@@ -1,0 +1,44 @@
+apiVersion: k8ssandra.io/v1alpha1
+kind: K8ssandraCluster
+metadata:
+  name: demo
+spec:
+        #reaper:
+        #heapSize: 16Gi
+        #autoScheduling:
+        #enabled: false
+  cassandra:
+    serverVersion: "4.0.3"
+    softPodAntiAffinity: false
+    datacenters:
+      - metadata: 
+          name: dc1
+        #telemetry:
+        #  prometheus:
+        #    enabled: false
+        size: 3
+        racks:
+          - name: r1
+        resources:
+         requests:
+           cpu: "7500m"
+           memory: "59Gi"
+         limits:
+           cpu: "8"
+           memory: "60Gi"    
+        storageConfig:
+          cassandraDataVolumeClaimSpec:
+            storageClassName: vsan-esa-default-policy-raid5
+            accessModes:
+              - ReadWriteOnce
+            resources:
+              requests:
+                storage: 500Gi
+        config:
+          jvmOptions:
+            heapSize: 31G
+            additionalOptions: 
+              #    enabled: true
+              - "-XX:+UseG1GC"   
+              - "-XX:G1RSetUpdatingPauseTimePercent=5" 
+              - "-XX:MaxGcPauseMillis=300" 
