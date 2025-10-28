@@ -24,7 +24,7 @@ spec:
            cpu: "7500m"
            memory: "59Gi"
          limits:
-           cpu: "8"
+          # cpu: "12"
            memory: "60Gi"    
         storageConfig:
           cassandraDataVolumeClaimSpec:
@@ -36,9 +36,6 @@ spec:
                 storage: 500Gi
         config:
           jvmOptions:
-            heapSize: 31G
-            additionalOptions: 
-              #    enabled: true
-              - "-XX:+UseG1GC"   
-              - "-XX:G1RSetUpdatingPauseTimePercent=5" 
-              - "-XX:MaxGcPauseMillis=300" 
+            heapSize: 20G
+               
+               
