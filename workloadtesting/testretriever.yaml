@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: result-retriever
+  namespace: k8ssandra-operator # IMPORTANT: Must be in the same namespace as the PVC
+spec:
+  # Use a standard utility image that includes common tools like 'ls' and 'cat'
+  containers:
+  - name: retriever-container
+    image: public.ecr.aws/nginx/nginx:latest  # A lightweight image with shell tools
+    command: ["/bin/sh", "-c", "sleep 3600"] # Keep the container running for 1 hour
+    volumeMounts:
+    - name: stress-volume
+      mountPath: /mnt/results # The path inside the pod where the PVC will be mounted
+  
+  # Define the volume source to be your existing PVC
+  volumes:
+  - name: stress-volume
+    persistentVolumeClaim:
+      claimName: testlog-pvc # MUST match the name of the PVC used by the Job
+  
+  restartPolicy: Never
